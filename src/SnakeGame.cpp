@@ -8,15 +8,32 @@
 
 using namespace std;
 
-SnakeGame::SnakeGame(){
+SnakeGame::SnakeGame(int argc, char *argv[]){
     choice = "";
     frameCount = 0;
-    initialize_game();
+    initialize_game(argc, argv);
 }
 
-void SnakeGame::initialize_game(){
-    //carrega o nivel ou os níveis
-    ifstream levelFile("data/maze1.txt"); //só dá certo se o jogo for executado dentro da raíz do diretório (vc vai resolver esse problema pegando o arquivo da linha de comando)
+void SnakeGame::initialize_game(int argc, char *argv[]){
+    if(argc < 2){
+        cerr << ">>> Sem arquivo, jogo Snaze precisa de um arquivo para inicializar!\n" <<
+                ">>> Simulação Falhou!\n";
+        exit(1);
+    }
+
+    string filename = argv[1];
+
+    // Open file
+    ifstream levelFile("data/"+filename);
+
+    if(!levelFile){
+        cerr << ">>> ERRO, o arquivo não foi aberto!" << endl;
+        exit(1);
+    } 
+
+    cout << ">>> Carregando níveis do arquivo [data/" 
+         << filename << "], por favor aguarde..." << endl;
+
     int lineCount = 0;
     string line;
     if(levelFile.is_open()){
@@ -122,6 +139,6 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(1000); // espera 1 segundo entre cada frame
+        wait(1000); //espera 1 segundo entre cada frame
     }
 }

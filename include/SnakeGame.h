@@ -10,15 +10,15 @@ class SnakeGame{
         * @brief descreve os possíveis estados do jogo, fique à vontade para adicionar outros se necessário
         **/
         enum GameStates{
-            RUNNING, //<! quando o jogo está executando o estado é RUNNING
-            GAME_OVER, //<! quando o jogo deve terminar o estado é GAME_OVER
+            RUNNING,     //<! quando o jogo está executando o estado é RUNNING
+            GAME_OVER,   //<! quando o jogo deve terminar o estado é GAME_OVER
             WAITING_USER //<! quando o jogo deve esperar por uma entrada do usuário o estado é WAITING_USER
         };
         
         /**
         * @brief construtor padrão, fique à vontade para adicionar parâmetros se desejar
         **/
-        SnakeGame();
+        SnakeGame(int argc, char *argv[]);
 
         /**
         * @brief chamado no main, este loop executa o jogo indefinidamente até que o usuário escolha terminar!
@@ -34,7 +34,7 @@ class SnakeGame{
         /**
         * @brief realiza a inicialização geral do jogo, fique à vontade para adicionar parâmetros se achar que deve
         **/
-        void initialize_game();
+        void initialize_game(int argc, char *argv[]);
 
         /**
         * @brief atualiza o estado do jogo, basicamente movendo os objetos, sorteando novas posições de comida
