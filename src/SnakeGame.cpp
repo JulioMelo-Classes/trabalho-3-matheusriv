@@ -70,28 +70,6 @@ void SnakeGame::update(){
     }
 }
 
-/**
- * @brief função auxiliar para fazer o programa esperar por alguns milisegundos
- * @param ms a quantidade de segundos que o programa deve esperar
- */
-void wait(int ms){
-    this_thread::sleep_for(chrono::milliseconds(ms));
-}
-
-/**
- * @brief função auxiliar para limpar o terminal
- */
-void clearScreen(){
-//some C++ voodoo here ;D
-#if defined _WIN32
-    system("cls");
-#elif defined (__LINUX__) || defined(__gnu_linux__) || defined(__linux__)
-    system("clear");
-#elif defined (__APPLE__)
-    system("clear");
-#endif
-}
-
 void SnakeGame::render(){
     clearScreen();
     switch(state){
@@ -112,6 +90,7 @@ void SnakeGame::render(){
 }
 
 void SnakeGame::game_over(){
+    
 }
 
 void SnakeGame::loop(){
@@ -119,6 +98,28 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(1000);// espera 1 segundo entre cada frame
+        wait(1000); // espera 1 segundo entre cada frame
     }
+}
+
+/**
+ * @brief função auxiliar para fazer o programa esperar por alguns milisegundos
+ * @param ms a quantidade de segundos que o programa deve esperar
+ */
+void wait(int ms){
+    this_thread::sleep_for(chrono::milliseconds(ms));
+}
+
+/**
+ * @brief função auxiliar para limpar o terminal
+ */
+void clearScreen(){
+    //some C++ voodoo here ;D
+    #if defined _WIN32
+        system("cls");
+    #elif defined (__LINUX__) || defined(__gnu_linux__) || defined(__linux__)
+        system("clear");
+    #elif defined (__APPLE__)
+        system("clear");
+    #endif
 }
