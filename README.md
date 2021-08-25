@@ -1,4 +1,4 @@
-## Compilando e executando o exemplo
+# Compilando e executando o exemplo
 
 No linux você pode compilar usando o g++. Apenas faça clone do projeto, e faça:
 
@@ -13,6 +13,7 @@ No windows você pode compilar usando o g++ ou o cl de forma análoga:
 g++ src/*.cpp -o main -I./include
 .\main.exe
 ```
+
 ou usando o CL
 
 ```bash

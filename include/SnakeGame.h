@@ -3,22 +3,28 @@
 #include <iostream>
 #include <vector>
 
+#include "Level.h"
 
 class SnakeGame{
     public:
         /**
+        * @brief construtor padrão
+        **/
+        SnakeGame();
+
+        /**
         * @brief descreve os possíveis estados do jogo, fique à vontade para adicionar outros se necessário
         **/
         enum GameStates{
-            RUNNING,     //<! quando o jogo está executando o estado é RUNNING
-            GAME_OVER,   //<! quando o jogo deve terminar o estado é GAME_OVER
-            WAITING_USER //<! quando o jogo deve esperar por uma entrada do usuário o estado é WAITING_USER
+            START, RUNNING, LEVEL_UP, GAME_OVER, WAITING_USER 
         };
-        
+
+        Snake cobra; //objeto snake
+
         /**
-        * @brief construtor padrão, fique à vontade para adicionar parâmetros se desejar
+        * @brief realiza a inicialização geral do jogo
         **/
-        SnakeGame(int argc, char *argv[]);
+        void initialize_game(int argc, char *argv[]);
 
         /**
         * @brief chamado no main, este loop executa o jogo indefinidamente até que o usuário escolha terminar!
@@ -26,15 +32,22 @@ class SnakeGame{
         void loop();
 
     private:
-        std::vector<std::string> maze; //<! vector contendo o labirinto atual, pode ser interpretado como uma matriz
         int frameCount; //<! contador de frames, usado apenas como exemplo
+        int current_level; //<! número de níveis do jogo
+        int score; //<! score do jogo
         std::string choice; //<! usado na função process_actions para guardar a escolha do usuário
+        std::vector<Level> levels; //<! vector de levels
         GameStates state; //<! guarda o estado do jogo
 
         /**
-        * @brief realiza a inicialização geral do jogo, fique à vontade para adicionar parâmetros se achar que deve
+        * @brief imprime apresentação do jogo no início
         **/
-        void initialize_game(int argc, char *argv[]);
+        void Intro();
+
+        /**
+        * @brief imprime número de vidas, score e maças comidas
+        **/
+        void printInterface();
 
         /**
         * @brief atualiza o estado do jogo, basicamente movendo os objetos, sorteando novas posições de comida
