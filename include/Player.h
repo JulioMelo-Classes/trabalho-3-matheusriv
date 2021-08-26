@@ -12,10 +12,15 @@
 #ifndef Player_h
 #define Player_h
 
+#include "Level.h"
+
 class Player{
    public:
+      Player();
+      Level * level;
+      void set_player(Level & level);
+      bool find_solution();
 
-   private:
 
 };
 

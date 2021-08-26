@@ -14,13 +14,24 @@
 class Level{
    public:
       /**
-      * @brief construtor
+      * @brief construtor padrão
       * @param row inteiro com número de linhas
       * @param col inteiro com número de colunas
       **/
       Level(int row, int col);
 
+      /**
+      * @brief construtor 
+      **/
+      Level();
+
       std::vector<std::string> maze; //vector contendo o labirinto atual, pode ser interpretado como uma matriz
+
+      /**
+      * @brief adiciona cobra ao nível
+      * @param cobra objeto da classe Snake
+      **/
+      void add_snake(Snake &cobra);
 
       /**
       * @brief definir o número de maçãs para comer
@@ -36,7 +47,7 @@ class Level{
       /**
       * @brief configurar labirinto
       **/
-      bool config_maze(Snake & cobra); 
+      bool config_maze(); 
 
       /**
       * @brief imprime o labirinto
@@ -44,25 +55,38 @@ class Level{
       void print_maze();
 
       /**
-      * @brief posição aleatória para a maçã
+      * @brief gera posição aleatória para a maçã no maze
       **/
       void rand_apple();
 
+      /**
+      * @brief move a cobra no maze
+      **/
+      void snake_movement();
+
+      /**
+      * @brief move a cobra na direcao da parede
+      **/
+      void snake_death_movement();
+
+
    private:
+      Snake * cobra; //cobra da classe Snake
       int lrow; //número de linhas
       int lcol; //número de colunas
-      int num_apples; //número de maçãs
-      std::string apple_maze; //maçã
+      int num_apples; //número de maçãs para comer
+      char apple_maze; //maçã
       std::pair<int,int> start_pos; //posição inicial da cobra
+      std::pair<int,int> snake_pos; //posição da cobra
       std::pair<int,int> apple_pos; //posição da maçã
 
       /**
-       * @brief transforma um indice de matriz i e j em um unico indice para um vetor
-       * @param i linha da matriz
-       * @param j coluna da matriz
-       * @return indice do elemento no vetor
+       * @brief verifica se a comida tem um dos lados livres para que a snake chegue ate ela
+       * @param row inteiro com número de linhas
+       * @param col inteiro com número de colunas
+       * @return verdadeiro se um dos vizinhos da maça esta livre, falso caso contrario
        */
-      int line_col_toIndex(int i, int j);
+      bool check_sides_apple(int row, int col);
 
       /**
       * @brief definir o valor das linhas e colunas de maze

@@ -11,7 +11,7 @@ using namespace std;
 
 SnakeGame::SnakeGame(){
     choice = "";
-    current_level = 0;
+    index_level = 0;
     score = 0;
     frameCount = 0;
 }
@@ -38,13 +38,13 @@ void clearScreen(){
     #endif
 }
 
-void SnakeGame::Intro(){
+void SnakeGame::print_intro(){
     stringstream ss;
     ss << "\n  ---> Welcome to the classic Snake Game! <---\n"
         << std::setfill('-') << std::setw(50) << "\n"
         << "Levels Loaded: " << levels.size() << " | " 
         << "Snake Lives: 5 | " 
-        << "Apples to eat: " << levels[current_level].get_num_apples() << "\n"
+        << "Apples to eat: " << levels[index_level].get_num_apples() << "\n"
         << "Clear all the levels to win the game!\n"
         << std::setfill('-') << std::setw(50) << "\n"
         << ">>> Press \x1b[94m<ENTER>\x1b[0m to start.\n";
@@ -56,13 +56,13 @@ void SnakeGame::Intro(){
     }
 }
 
-void SnakeGame::printInterface(){
+void SnakeGame::print_informations(){
     std::stringstream ss;
     ss << setfill('-') << std::setw(50) << "\n"
-       << "Lives: XX"  << " | "
+       << "Lives: " << cobra.get_lives() << " | "
        << "Score: " << score << " | "
-       << "Food Eaten: " << cobra.get_apples_eaten() << "of " 
-       << levels[current_level].get_num_apples() << "\n" 
+       << "Food Eaten: " << cobra.get_apples_eaten() << " of " 
+       << current_level.get_num_apples() << "\n" 
        << setfill('-') << std::setw(50) << "\n";
        
     cout << ss.str() << endl;
@@ -112,15 +112,14 @@ void SnakeGame::initialize_game(int argc, char *argv[]){
             aux.maze[i] = line;
         } 
 
-        if(aux.config_maze(cobra) == false){
+        if(aux.config_maze() == false){
             cerr << ">>> ERRO! Labirinto não possui posição inicial da cobra!\n";
             exit(1);
         }
-        aux.print_maze();
         levels.push_back(aux); 
     }
-    
-    Intro();
+
+    print_intro();
 
     state = START;
 }
@@ -130,9 +129,17 @@ void SnakeGame::process_actions(){
     //no caso deste trabalho temos 2 tipos de entrada, uma que vem da classe Player, como resultado do processamento da IA
     //outra vem do próprio usuário na forma de uma entrada do teclado.
     switch(state){
-        case WAITING_USER: //o jogo bloqueia aqui esperando o usuário digitar a escolha dele
+        case WAITING: //o jogo bloqueia aqui esperando o usuário digitar a escolha dele
             cin>>std::ws>>choice;
             break;
+
+        /*
+        case RUNNING
+            if(player.find_solution())
+                level.snake_movement
+            else
+                level.snake_death_movement
+        */
 
         default:
             //nada pra fazer aqui
@@ -142,55 +149,56 @@ void SnakeGame::process_actions(){
 
 void SnakeGame::update(){
     //atualiza o estado do jogo de acordo com o resultado da chamada de "process_input"
-
-    /* Um nível é completado quando a quantidade de comida chega a 0 e a 
-    cobra come a última comida que foi colocada no mapa. Quando isso acontece, 
-    a simulação deve exibir uma mensagem correspondente e perguntar ao usuário se ele 
-    quer continuar para ir para o próximo nível (se houver), reiniciar aquele mesmo nível 
-    ou reiniciar do nível 1. */
-    
     switch(state){
         case START:
-            levels[current_level].rand_apple();
-            // FIND SOLUTION
+            current_level = levels[index_level];
+            current_level.add_snake(cobra);
+            player.set_player(current_level);
             state = RUNNING;
             break;
 
         case RUNNING:
-            /*
-            if(frameCount>0 && frameCount%10 == 0) 
-                state = WAITING_USER;
-            */
+            if(cobra.get_lives() == 0 || 
+            cobra.get_apples_eaten() == current_level.get_num_apples())
+                state = WAITING; //subir de nivel ou encerrar 
+            if(frameCount>0 && frameCount%10 == 0)
+                state = WAITING; 
+            current_level.rand_apple();
             break;
         
-        case LEVEL_UP:
-            //change Level
+        case WAITING:
             if(levels.size() > 2){
-                current_level++;
-                //avoid seg fault
-                if(current_level >= levels.size()-1){
-                     current_level = 0;
+                if(index_level+1 == levels.size()){
+                    //chegou no ultimo level
+                    state = GAME_OVER;
+                } 
+                else{
+                    if(choice == "n"){
+                        state = GAME_OVER;
+                        game_over();
+                    }
+                    else if(choice == "r"){
+                        //reiniciar
+                        cobra.reset();
+                        state = START;
+                    }
+                    else if(choice == "rr"){
+                        //reiniciar tudo
+                        index_level = 0;
+                        cobra.reset();
+                        state = START;
+                    }
+                    else if(choice == "s"){
+                        //mudar de nivel
+                        index_level++;
+                        cobra.reset();
+                        state = START;
+                    }
                 }
             }
-            state = START;
-            break;
-
-        case WAITING_USER: 
-            if(choice == "n"){
+            else{
                 state = GAME_OVER;
-                game_over();
             }
-            else if(choice == "s"){
-                state = LEVEL_UP;
-            }
-            /*
-            else if(choice == "r"){
-                reiniciar
-            }
-            else if(choice == "r1"){
-                reiniciar tudo
-            }
-            */
             break;
 
         default:
@@ -203,16 +211,30 @@ void SnakeGame::render(){
     clearScreen();
     switch(state){
         case RUNNING:
-            printInterface();
+            print_informations();
+            current_level.print_maze();
+            frameCount++;
             break;
-        case WAITING_USER:
-            cout << "Você quer continuar com o jogo? (s/n)" << endl;
+
+        case WAITING:
+            if(cobra.get_apples_eaten() == current_level.get_num_apples()){
+                cout << "A cobra venceu o level " << index_level+1 << endl;
+            }
+            if(cobra.get_lives() == 0){
+                cout << "A cobra perdeu!" << endl;
+            }
+            if(levels.size() > 2){
+                cout << "A snake completou o level " << index_level+1 << endl;
+                cout << "Você quer continuar com o jogo? \n" 
+                     << "  Digite 's' para continuar | 'n' para parar\n" 
+                     << "  'r' para reiniciar level  | 'rr' para reiniciar tudo" << endl;
+            }
             break;
+
         case GAME_OVER:
             cout << "O jogo terminou!"<<endl;
             break;
     }
-    frameCount++;
 }
 
 void SnakeGame::game_over(){
@@ -224,6 +246,6 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(500);
+        wait(1000);
     }
 }

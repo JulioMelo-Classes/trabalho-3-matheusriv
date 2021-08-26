@@ -1,24 +1,25 @@
-# Compilando e executando o exemplo
+# Snaze
 
-No linux você pode compilar usando o g++. Apenas faça clone do projeto, e faça:
+Neste projeto a tarefa é desenvolver uma simulação do jogo clássico com uma diferença: a cobra está presa dentro de um labirinto!
 
-```bash
-g++ src/*.cpp -o main -I./include
-./main
+A simulação do jogo Snaze carrega o nível do labirinto a partir de um arquivo texto de entrada, cujo nome é fornecido via argumento de linha de comando, e controla os movimentos da cobra. O desafio principal neste projeto de programação é projetar um motor básico de inteligência artificial (IA) que guia a cobra até a comida que surge em posições aleatórias dentro do labirinto sem que a cobra colida com as paredes do mesmo ou consigo mesma.
+
+## Compilando e executando o exemplo
+
+1. Entre na pasta `build`:
+```
+cd build
+```
+2. Execute os comandos do `cmake` para gerar os arquivos intermediários e o executável dentro de `build`.
+```
+cmake ..
+cmake --build .
 ```
 
-No windows você pode compilar usando o g++ ou o cl de forma análoga:
+Isso criará um executável dentro da pasta `build` chamado de `snaze`.
 
-```bash
-g++ src/*.cpp -o main -I./include
-.\main.exe
+Você deve colocar o arquivo de entrada por meio de argumentos de linha de comando para executar o programa, veja abaixo um exemplo com o arquivo dentro da pasta data:
+
+```console
+./snaze ../data/maze1.txt
 ```
-
-ou usando o CL
-
-```bash
-cl src/*.cpp -I./include
-.\Snaze.exe
-```
-
-__Observação sobre o windows__: Ao realizar testes meu sistema detectou o programa como um virus, para conseguir executar eu tive que usar a versão compilada com o g++ ou configurar o windows defender para ignorar o executável que está na pasta do projeto (o problema só ocorre com a versão compilada pelo CL).
