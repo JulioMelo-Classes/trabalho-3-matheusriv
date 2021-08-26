@@ -20,6 +20,7 @@ class Player{
       Level * level;
       void set_player(Level & level);
       bool find_solution();
+      //direction next_move();
 
 
 };

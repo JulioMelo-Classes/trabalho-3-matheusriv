@@ -25,8 +25,7 @@ class Snake{
       int lives; //número de vidas
       int apples_eaten; //número de maçãs comidas
       int snake_size; //tamanho da cobra
-      std::unordered_set<int> visited; //armazena as posicoes visitadas
-      std::vector<std::vector<int>> shortest_path;
+      std::vector<std::pair<int,int>> shortest_path;
       std::vector<int> death_path;
 
 };

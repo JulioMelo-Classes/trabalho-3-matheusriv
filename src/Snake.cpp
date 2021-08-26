@@ -35,12 +35,11 @@ bool Snake::check_body(int prow, int pcol){
 }
 
 void Snake::reset(){
-    visited.clear();
-    
+    //reiniciar todos os atributos
     while(!snake_body.empty()){
         snake_body.pop();
     }
-    
+
     snake_size = 1;
     apples_eaten = 0;
 }

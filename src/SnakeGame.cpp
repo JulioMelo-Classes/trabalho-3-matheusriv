@@ -223,7 +223,7 @@ void SnakeGame::render(){
             if(cobra.get_lives() == 0){
                 cout << "A cobra perdeu!" << endl;
             }
-            if(levels.size() > 2){
+            if(levels.size() > 2 || cobra.get_lives() != 0){
                 cout << "A snake completou o level " << index_level+1 << endl;
                 cout << "Você quer continuar com o jogo? \n" 
                      << "  Digite 's' para continuar | 'n' para parar\n" 
