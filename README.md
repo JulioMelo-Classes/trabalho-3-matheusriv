@@ -23,3 +23,78 @@ Você deve colocar o arquivo de entrada por meio de argumentos de linha de coman
 ```console
 ./snaze ../data/maze1.txt
 ```
+
+## Avaliação CP1
+
+### Snake/Pacman
+O jogo deveria conter o modo snake/pacman. Em ambos os modos não é possível andar pra trás. No modo snake deve ser desenhado o corpo.
+
+**Avaliação**
+
+Não implementado
+
+### Render.ui
+O jogo deveria desenhar a UI corretamente, mostrando ao menos as vidas, o nível e o score.
+
+**Avaliação**
+
+Ok
+
+### Render.mapa
+O jogo deveria desenhar o mapa corretamente, com base no arquivo passado como argumento. Ok
+
+**Avaliação**
+
+ok
+
+### Render.snake
+O jogo deveria desenhar a snake corretamente.
+
+**Avaliação**
+
+Não implementado, quando eu executo vejo o mapa mas ficam aparecendo uns Qs em vários pontos mas nenhuma snake.
+
+### Logic.colisão e Logic.comida
+O jogo deve se comportar corretamente quando ocorre uma colisão com comida e com paredes.
+
+**Avaliação**
+
+Não implementado.
+
+### Transição de mapas
+O jogo deve ter transição de mapa uma vez que um mapa é terminado.
+
+**Avaliação**
+
+Não implementado.
+
+### Interação com o usuário
+O jogo deve perguntar ao usuário se quer continuar/reiniciar o nível/reiniciar o jogo a cada transição de mapa
+
+**Avaliação**
+
+Vou considerar, uma vez que a interação inicial ficou muito boa.
+
+### Classe Level ou similar
+O software deve encapsular as funcionalidades do nível em uma classe.
+
+**Avaliação**
+
+Ok
+
+### Classe Player ou similar
+O software deve encapsular as decisões do jogo em uma classe.
+
+**Avaliação**
+
+Ok
+
+### Classe Snake ou similar
+O software deve encapsular as funcionalidades relacionadas à snake em uma classe. 
+
+**Avaliação**
+
+Vou considerar 50% uma vez que a classe não tem qualquer função no código
+
+## Comentários gerais CP1
+- Como você ainda não fez a parte básica que seria movimentar a cobra no mapa sugiro focar nas funcionalidades do CP1
