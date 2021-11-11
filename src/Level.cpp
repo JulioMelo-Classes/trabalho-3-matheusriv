@@ -53,23 +53,25 @@ void Level::rand_apple(){
     std::mt19937 generatorRow(seedRow);
     std::mt19937 generatorCol(seedCol);
 
-    int rand_row, rand_col;
+    Position random;
 
     while(true){
-        rand_row = generatorRow()%lrow;
-        rand_col = generatorCol()%lcol;
-        if(maze[rand_row][rand_col] == ' '){
-            if(!cobra->check_body(rand_row, rand_col) &&
-                check_sides_apple(rand_row, rand_col) )
-                maze[rand_row][rand_col] = apple_maze;
+        random.i = generatorRow()%lrow;
+        random.j = generatorCol()%lcol;
+        if(maze[random.i][random.j] == ' '){
+            if(!check_body(random) && check_sides_apple(random))
+                maze[random.i][random.j] = apple_maze;
             break;
         }
     }
 
-    apple_pos = std::make_pair(rand_row, rand_col);
+    apple_pos.i = random.i;
+    apple_pos.j = random.j;
 }
 
-bool Level::check_sides_apple(int row, int col){
+bool Level::check_sides_apple(Position pst){
+    int row = pst.i;
+    int col = pst.j;
     if(maze[row+1][col] == ' '){
         return true;
     }
@@ -86,6 +88,19 @@ bool Level::check_sides_apple(int row, int col){
     return false;
 }
 
+bool Level::check_body(Position pst){
+    auto aux = cobra->snake_body;
+    
+    while(!aux.empty()){
+        if(pst.i == aux.front().i && pst.j == aux.front().j){
+            return true;
+        }
+        aux.pop();
+    }
+
+    return false;
+}
+
 void Level::set_measures(int row, int col){
     lrow = row;
     lcol = col;
@@ -96,6 +111,7 @@ void Level::set_measures(int row, int col){
 }
 
 void Level::set_start_pos(int row, int col){
-    start_pos = std::make_pair(row, col);
+    start_pos.i = row;
+    start_pos.i = col;
     snake_pos = start_pos;
 }

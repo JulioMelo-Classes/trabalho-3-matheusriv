@@ -13,7 +13,6 @@ SnakeGame::SnakeGame(){
     choice = "";
     index_level = 0;
     score = 0;
-    frameCount = 0;
 }
 
 /**
@@ -94,7 +93,7 @@ void SnakeGame::initialize_game(int argc, char *argv[]){
         ss >> linhas >> colunas >> num_apples;
         
         if(linhas <= 0 || linhas > 100 || 
-           colunas <= 0 || colunas > 100 || num_apples <= 0){
+        colunas <= 0 || colunas > 100 || num_apples <= 0){
             cerr << ">>> ERRO, valores do labirinto inválidos!\n";
             exit(1);
         }
@@ -129,17 +128,24 @@ void SnakeGame::process_actions(){
     //no caso deste trabalho temos 2 tipos de entrada, uma que vem da classe Player, como resultado do processamento da IA
     //outra vem do próprio usuário na forma de uma entrada do teclado.
     switch(state){
-        case WAITING: //o jogo bloqueia aqui esperando o usuário digitar a escolha dele
-            cin>>std::ws>>choice;
-            break;
+        case START:
+            current_level = levels[index_level];
+            current_level.add_snake(cobra);
+            player.set_level(current_level);
 
-        /*
-        case RUNNING
+        case RUNNING:
+            /*
             if(player.find_solution())
                 level.snake_movement
             else
                 level.snake_death_movement
-        */
+                break;
+            */
+            break;
+
+        case WAITING: 
+            cin>>std::ws>>choice;
+            break;
 
         default:
             //nada pra fazer aqui
@@ -151,53 +157,55 @@ void SnakeGame::update(){
     //atualiza o estado do jogo de acordo com o resultado da chamada de "process_input"
     switch(state){
         case START:
-            current_level = levels[index_level];
-            current_level.add_snake(cobra);
-            player.set_player(current_level);
             state = RUNNING;
             break;
 
         case RUNNING:
-            if(cobra.get_lives() == 0 || 
-            cobra.get_apples_eaten() == current_level.get_num_apples())
-                state = WAITING; //subir de nivel ou encerrar 
-            if(frameCount>0 && frameCount%10 == 0)
-                state = WAITING; 
-            current_level.rand_apple();
+            if(index_level+1 == levels.size() && 
+            cobra.get_apples_eaten() == current_level.get_num_apples()+1){
+                //chegou no ultimo level e terminou
+                state = WAITING;
+            } 
+            else if(cobra.get_lives() == 0 || 
+            cobra.get_apples_eaten() == current_level.get_num_apples()+1){ 
+                //subir de nivel ou encerrar 
+                state = WAITING;
+            }
             break;
         
         case WAITING:
-            if(levels.size() > 2){
-                if(index_level+1 == levels.size()){
-                    //chegou no ultimo level
+            if(cobra.get_lives() == 0 || (index_level+1 == levels.size() && 
+            cobra.get_apples_eaten() == current_level.get_num_apples()+1)){
+                if(choice == "e"){
                     state = GAME_OVER;
-                } 
-                else{
-                    if(choice == "n"){
-                        state = GAME_OVER;
-                        game_over();
-                    }
-                    else if(choice == "r"){
-                        //reiniciar
-                        cobra.reset();
-                        state = START;
-                    }
-                    else if(choice == "rr"){
-                        //reiniciar tudo
-                        index_level = 0;
-                        cobra.reset();
-                        state = START;
-                    }
-                    else if(choice == "s"){
-                        //mudar de nivel
-                        index_level++;
-                        cobra.reset();
-                        state = START;
-                    }
+                }
+                else if(choice == "r"){
+                    reset(1);
+                    state = START;
+                }
+                else if(choice == "rr"){
+                    reset(2);
+                    state = START;
                 }
             }
             else{
-                state = GAME_OVER;
+                if(choice == "s"){
+                    //mudar de nivel
+                    index_level++;
+                    cobra.reset();
+                    state = START;
+                }
+                else if(choice == "n"){
+                    state = GAME_OVER;
+                }
+                else if(choice == "r"){
+                    reset(1);
+                    state = START;
+                }
+                else if(choice == "rr"){
+                    reset(2);
+                    state = START;
+                }
             }
             break;
 
@@ -211,34 +219,62 @@ void SnakeGame::render(){
     clearScreen();
     switch(state){
         case RUNNING:
+            cout << "Level " << index_level+1 << endl;
             print_informations();
             current_level.print_maze();
-            frameCount++;
             break;
 
         case WAITING:
-            if(cobra.get_apples_eaten() == current_level.get_num_apples()){
-                cout << "A cobra venceu o level " << index_level+1 << endl;
-            }
             if(cobra.get_lives() == 0){
-                cout << "A cobra perdeu!" << endl;
+                cout << "A cobra perdeu!\n" 
+                     << "  Digite 'e' para encerrar\n" 
+                     << "  'r' para reiniciar level  | 'rr' para reiniciar tudo" << endl;
             }
-            if(levels.size() > 2 || cobra.get_lives() != 0){
-                cout << "A snake completou o level " << index_level+1 << endl;
-                cout << "Você quer continuar com o jogo? \n" 
-                     << "  Digite 's' para continuar | 'n' para parar\n" 
+            else if(index_level+1 == levels.size() && 
+            cobra.get_apples_eaten() == current_level.get_num_apples()+1){
+                cout << "A snake terminou o jogo\n" 
+                     << "  Digite 'e' para encerrar\n" 
+                     << "  'r' para reiniciar level  | 'rr' para reiniciar tudo" << endl;
+            }
+            else{
+                cout << "A snake completou o level " << index_level+1 << endl
+                     << "  Você quer continuar com o jogo?\n" 
+                     << "  Digite 's' para continuar | 'n' para encerrar\n" 
                      << "  'r' para reiniciar level  | 'rr' para reiniciar tudo" << endl;
             }
             break;
 
         case GAME_OVER:
-            cout << "O jogo terminou!"<<endl;
+            cout << "O jogo terminou!" << endl;
             break;
     }
 }
 
-void SnakeGame::game_over(){
-    
+void SnakeGame::reset(int choice){
+    if(cobra.get_lives() <= 0){
+        if(choice == 1){
+            //reiniciar
+            cobra.reset();
+            cobra.reset_lives();
+        }
+        else if(choice == 2){
+            //reiniciar tudo
+            index_level = 0;
+            cobra.reset();
+            cobra.reset_lives();
+        }  
+    }
+    else{
+        if(choice == 1){
+            //reiniciar
+            cobra.reset();
+        }
+        else if(choice == 2){
+            //reiniciar tudo
+            index_level = 0;
+            cobra.reset();
+        }  
+    }
 }
 
 void SnakeGame::loop(){
@@ -246,6 +282,6 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(1000);
+        wait(700);
     }
 }

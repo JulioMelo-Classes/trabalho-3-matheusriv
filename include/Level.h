@@ -9,6 +9,7 @@
 #include <utility>
 #include <random>
 #include <chrono> 
+#include "Position.h"
 #include "Snake.h"
 
 class Level{
@@ -26,6 +27,10 @@ class Level{
       Level();
 
       std::vector<std::string> maze; //vector contendo o labirinto atual, pode ser interpretado como uma matriz
+
+      Snake * cobra; //cobra da classe Snake
+
+      Position snake_pos; //posição da cobra
 
       /**
       * @brief adiciona cobra ao nível
@@ -50,6 +55,13 @@ class Level{
       bool config_maze(); 
 
       /**
+       * @brief verifica se a comida tem um dos lados livres para que a snake chegue ate ela
+       * @param pst posição a ser verificada
+       * @return verdadeiro se um dos vizinhos da maça esta livre, falso caso contrario
+       */
+      bool check_sides_apple(Position pst);
+
+      /**
       * @brief imprime o labirinto
       **/
       void print_maze();
@@ -59,34 +71,21 @@ class Level{
       **/
       void rand_apple();
 
-      /**
-      * @brief move a cobra no maze
-      **/
-      void snake_movement();
-
-      /**
-      * @brief move a cobra na direcao da parede
-      **/
-      void snake_death_movement();
-
 
    private:
-      Snake * cobra; //cobra da classe Snake
       int lrow; //número de linhas
       int lcol; //número de colunas
       int num_apples; //número de maçãs para comer
       char apple_maze; //maçã
-      std::pair<int,int> start_pos; //posição inicial da cobra
-      std::pair<int,int> snake_pos; //posição da cobra
-      std::pair<int,int> apple_pos; //posição da maçã
+      Position start_pos; //posição inicial da cobra
+      Position apple_pos; //posição da maçã
 
       /**
-       * @brief verifica se a comida tem um dos lados livres para que a snake chegue ate ela
-       * @param row inteiro com número de linhas
-       * @param col inteiro com número de colunas
-       * @return verdadeiro se um dos vizinhos da maça esta livre, falso caso contrario
-       */
-      bool check_sides_apple(int row, int col);
+      * @brief verifica se a posição passada esta ocupada pela cobra
+      * @param pst Posição a ser verificada
+      * @return true caso esteja na posição, false caso contrário
+      **/
+      bool check_body(Position pst);
 
       /**
       * @brief definir o valor das linhas e colunas de maze

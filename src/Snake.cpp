@@ -16,22 +16,12 @@ int Snake::get_apples_eaten(){
     return apples_eaten;
 }
 
-std::queue<std::pair<int,int>> & Snake::get_snake_body(){
-    return snake_body;
+int Snake::get_snake_size(){
+    return snake_size;
 }
 
-bool Snake::check_body(int prow, int pcol){
-    std::pair<int,int> pst = std::make_pair(prow, pcol);
-    auto aux = snake_body;
-    
-    while(!aux.empty()){
-        if(pst == aux.front()){
-            return true;
-        }
-        aux.pop();
-    }
-
-    return false;
+void Snake::reset_lives(){
+    lives = 5;
 }
 
 void Snake::reset(){

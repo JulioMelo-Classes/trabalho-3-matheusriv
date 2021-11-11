@@ -10,23 +10,46 @@
 #include <queue>
 #include <stack>
 #include <unordered_set>
+#include "Position.h"
 
 class Snake{
    public:
+      /**
+      * @brief construtor 
+      **/
       Snake();
-      std::queue<std::pair<int,int>> snake_body;
+
+      std::queue<Position> snake_body; //corpo da Snake
+
+      /**
+      * @brief retorna número de vidas da Snake 
+      **/
       int get_lives();
+
+      /**
+      * @brief retorna número de maçãs comidas da Snake 
+      **/
       int get_apples_eaten();
-      bool check_body(int prow, int pcol);
+
+      /**
+      * @brief retorna tamanho da Snake 
+      **/
+      int get_snake_size();
+
+      /**
+      * @brief faz reset do número de vidas da Snake 
+      **/
+      void reset_lives();
+
+      /**
+      * @brief faz reset dos parâmetros da Snake 
+      **/
       void reset();
-      std::queue<std::pair<int,int>> & get_snake_body();
 
    private:
       int lives; //número de vidas
       int apples_eaten; //número de maçãs comidas
       int snake_size; //tamanho da cobra
-      std::vector<std::pair<int,int>> shortest_path;
-      std::vector<int> death_path;
 
 };
 

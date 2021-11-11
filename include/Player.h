@@ -17,11 +17,25 @@
 class Player{
    public:
       Player();
+      void set_level(Level & level);
+      bool find_solution(Position snake, Position food);
+      std::vector<Position> get_shortest_path(Position food);
+      std::vector<Position> get_death_path();
+   
+   private:
       Level * level;
-      void set_player(Level & level);
-      bool find_solution();
-      //direction next_move();
-
+      unsigned distance;
+      std::vector<Position> visited;
+      std::vector<std::vector<Position>> shortest_path;
+      std::queue<Position> fila;
+      std::vector<Position> ghost_snake_body;
+      std::vector<Position> death_path;
+      unsigned find_path(Position pst);
+      void simulate_snake(Position end_pst);
+      Position update_position(Position snake, short next);
+      bool is_body(Position pst);
+      int count_visited(Position pst);
+      void reset();
 
 };
 

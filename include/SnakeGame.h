@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include "Position.h"
 #include "Player.h"
 #include "Snake.h"
 #include "Level.h"
@@ -14,9 +15,9 @@ class SnakeGame{
         **/
         SnakeGame();
 
-        Snake cobra; //objeto snake
+        Snake cobra; //<! objeto snake
 
-        Player player; //objeto player
+        Player player; //<! objeto player
 
         /**
         * @brief descreve os possíveis estados do jogo, fique à vontade para adicionar outros se necessário
@@ -36,13 +37,13 @@ class SnakeGame{
         void loop();
 
     private:
-        int index_level; //índice do level
+        int index_level; //<! índice do level
         int score; //<! score do jogo
         int frameCount;
+        GameStates state; //<! guarda o estado do jogo
         std::string choice; //<! usado na função process_actions para guardar a escolha do usuário
         std::vector<Level> levels; //<! vector de levels
         Level current_level;
-        GameStates state; //<! guarda o estado do jogo
 
         /**
         * @brief imprime apresentação do jogo no início
@@ -70,9 +71,9 @@ class SnakeGame{
         void render();
 
         /**
-        * @brief é chamada quando o jogo termina a fim de destruir/resetar elementos do estado do jogo
+        * @brief é chamada a fim de resetar elementos do estado do jogo
         **/
-        void game_over();
+        void reset(int choice);
 };
 
 #endif //SnakeGame_h
